@@ -1,9 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
+import LogoSistemas from '../assets/logosistemas.svg';
+import LogoUPN from '../assets/LogotipoOficialUPN164-2025.svg';
 
 const CredentialAppointment = () => {
   const nombreInputRef = useRef<HTMLInputElement>(null);
-  
+
   const getCurrentDateTime = () => {
     const now = new Date();
     return {
@@ -43,7 +45,8 @@ const CredentialAppointment = () => {
     }
   }, []);
 
-  const handleInputChange = (e) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -160,16 +163,28 @@ const CredentialAppointment = () => {
               />
             </div>
           </div>
+          <div className="actions w-full flex items-center justify-center">
+              <button
+                onClick={handlePrint}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                Descargar / Imprimir
+              </button>
+            </div>
         </div>
       </div>
 
-      <div>
-        <div ref={canvasRef} className="bg-white text-black p-8 rounded-xl mb-4">
+      <div className="w-full flex flex-col justify-center items-center">
+        <div ref={canvasRef} className="bg-white text-black p-8 rounded-xl mb-4 w-96 min-h-96">
+          <header className='w-full flex flex-row items-center justify-center'>
+            <img src={LogoSistemas} alt="logotiposistemas" className='w-48' />
+            <img src={LogoUPN} alt="logotipoupn" className='relative w-36 -left-4' />
+          </header>
           <div className="border-b-2 border-gray-200 pb-4 mb-4">
             <h3 className="text-2xl font-bold text-center">Cita para Credencialización</h3>
             <p className="text-center text-gray-600">UPN 164</p>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1">
             <p><strong>Nombre:</strong> {formData.nombre}</p>
             <p><strong>Grupo:</strong> {formData.grado}{formData.grupo}</p>
             <p><strong>Carrera:</strong> {formData.carrera}</p>
@@ -179,12 +194,7 @@ const CredentialAppointment = () => {
             <p><strong>Folio Pago:</strong> {formData.folioPago}</p>
           </div>
         </div>
-        <button
-          onClick={handlePrint}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-        >
-          Descargar / Imprimir
-        </button>
+
       </div>
     </div>
   );
