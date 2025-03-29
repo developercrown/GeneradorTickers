@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
@@ -6,6 +5,7 @@ import WifiQR from './components/WifiQR';
 import CredentialAppointment from './components/CredentialAppointment';
 import UserCredentials from './components/UserCredentials';
 import ContactInfo from './components/ContactInfo';
+import DevTest from './components/DevTest';
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
         <div className="container mx-auto px-4 py-8">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/dev" element={<DevTest />} />
             <Route path="/wifi-qr" element={<WifiQR />} />
             <Route path="/credential-appointment" element={<CredentialAppointment />} />
             <Route path="/user-credentials" element={<UserCredentials />} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wifi, Car as IdCard, Key, Mail } from 'lucide-react';
+import { Wifi, Car as IdCard, Key, Mail, Code } from 'lucide-react';
 
 const MenuOption = ({ icon: Icon, title, path, description }) => {
   const navigate = useNavigate();
@@ -45,6 +45,12 @@ const Home = () => {
           title="Datos de Contacto"
           path="/contact-info"
           description="Comparte información de contacto"
+        />
+        <MenuOption
+          icon={Code}
+          title="DevTest"
+          path="/dev"
+          description="Area de pruebas"
         />
       </div>
     </div>
