@@ -1,7 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
-import html2canvas from 'html2canvas';
-import LogoSistemas from '../assets/logosistemas.svg';
-import LogoUPN from '../assets/LogotipoOficialUPN164-2025.svg';
+import { useRef, useState, useEffect } from 'react';
+
+import TicketPrinter from './TicketPrinter';
+
+const ticketData = {
+  title: "Cita para Credencialización",
+  subtitle: "CORONA TICKET SYSTEM 1.0",
+};
 
 const CredentialAppointment = () => {
   const nombreInputRef = useRef<HTMLInputElement>(null);
@@ -18,25 +22,45 @@ const CredentialAppointment = () => {
     nombre: '',
     grupo: 'A',
     grado: '1',
-    carrera: 'Licenciatura en pedagogía',
+    carrera: 'LIE',
     fecha: getCurrentDateTime().date,
     hora: getCurrentDateTime().time,
     folioRecibo: '',
     folioPago: '',
   });
 
-  const canvasRef = useRef(null);
-
   const carreras = [
-    "Licenciatura en intervención educativa",
-    "Licenciatura en pedagogía",
-    "Licenciatura en Desarrollo Comunitario",
-    "Licenciatura de Nivelación",
-    "Maestría en Educación Básica",
-    "Maestría en Educación Media Superior"
-  ];
+    {
+      label: "Licenciatura en intervención educativa",
+      value: "LIE"
+    },
+    {
+      label: "Licenciatura en pedagogía",
+      value: "LP"
+    },
+    {
+      label: "Licenciatura en Desarrollo Comunitario",
+      value: "LDC"
+    },
+    {
+      label: "Licenciatura de Nivelación",
+      value: "LINI"
+    },
+    {
+      label: "Maestría en Educación Básica",
+      value: "MEB"
+    },
+    {
+      label: "Maestría en Educación Media Superior",
+      value: "MEMS"
+    },
+    {
+      label: "Maestría en Educación con Campo en Práctica Docente",
+      value: "MECPD"
+    }
+  ]
 
-  const grupos = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const grupos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
   const grados = Array.from({ length: 10 }, (_, i) => (i + 1).toString());
 
   useEffect(() => {
@@ -51,21 +75,14 @@ const CredentialAppointment = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePrint = async () => {
-    if (canvasRef.current) {
-      const canvas = await html2canvas(canvasRef.current);
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = 'cita-credencializacion.png';
-      link.href = dataUrl;
-      link.click();
-    }
-  };
+  const parseGrupo = (grado: string = "", grupo: string = "") => {
+    return (`${grado}${grupo}`).toUpperCase();
+  }
 
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
       <div className="bg-gray-800 p-6 rounded-xl">
-        <h2 className="text-2xl font-bold mb-6">Datos de la Cita</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Datos de la Cita</h2>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Nombre Completo</label>
@@ -80,19 +97,6 @@ const CredentialAppointment = () => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Grupo</label>
-              <select
-                name="grupo"
-                value={formData.grupo}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
-              >
-                {grupos.map(grupo => (
-                  <option key={grupo} value={grupo}>{grupo}</option>
-                ))}
-              </select>
-            </div>
-            <div>
               <label className="block text-sm font-medium mb-1">Grado</label>
               <select
                 name="grado"
@@ -105,6 +109,19 @@ const CredentialAppointment = () => {
                 ))}
               </select>
             </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Grupo</label>
+              <select
+                name="grupo"
+                value={formData.grupo}
+                onChange={handleInputChange}
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              >
+                {grupos.map(grupo => (
+                  <option key={grupo} value={grupo}>{grupo}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Carrera</label>
@@ -114,8 +131,8 @@ const CredentialAppointment = () => {
               onChange={handleInputChange}
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
             >
-              {carreras.map(carrera => (
-                <option key={carrera} value={carrera}>{carrera}</option>
+              {carreras.map((carrera, key) => (
+                <option key={key} value={carrera.value}>{carrera.label}</option>
               ))}
             </select>
           </div>
@@ -163,38 +180,37 @@ const CredentialAppointment = () => {
               />
             </div>
           </div>
-          <div className="actions w-full flex items-center justify-center">
-              <button
-                onClick={handlePrint}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-              >
-                Descargar / Imprimir
-              </button>
-            </div>
+
         </div>
       </div>
 
       <div className="w-full flex flex-col justify-center items-center">
-        <div ref={canvasRef} className="bg-white text-black p-8 rounded-xl mb-4 w-96 min-h-96">
-          <header className='w-full flex flex-row items-center justify-center'>
-            <img src={LogoSistemas} alt="logotiposistemas" className='w-48' />
-            <img src={LogoUPN} alt="logotipoupn" className='relative w-36 -left-4' />
-          </header>
-          <div className="border-b-2 border-gray-200 pb-4 mb-4">
-            <h3 className="text-2xl font-bold text-center">Cita para Credencialización</h3>
-            <p className="text-center text-gray-600">UPN 164</p>
-          </div>
-          <div className="space-y-1">
-            <p><strong>Nombre:</strong> {formData.nombre}</p>
-            <p><strong>Grupo:</strong> {formData.grado}{formData.grupo}</p>
-            <p><strong>Carrera:</strong> {formData.carrera}</p>
-            <p><strong>Fecha:</strong> {formData.fecha}</p>
-            <p><strong>Hora:</strong> {formData.hora}</p>
-            <p><strong>Folio Recibo:</strong> {formData.folioRecibo}</p>
-            <p><strong>Folio Pago:</strong> {formData.folioPago}</p>
-          </div>
-        </div>
-
+        <TicketPrinter
+          title={ticketData.title}
+          subtitle={ticketData.subtitle}
+          ticketContent={[
+            { label: "Folio Recibo", value: `${formData.folioRecibo}` },
+            { label: "Folio Pago", value: `${formData.folioPago}` },
+            { label: "Nombre", value: formData.nombre },
+            { label: "Grupo", value: parseGrupo(formData.grado, formData.grupo) },
+            { label: "Carrera", value: (formData.carrera).toUpperCase() }
+          ]}
+          highlightContent={[
+            { label: "Fecha", value: formData.fecha },
+            { label: "Hora", value: `${formData.hora} hrs` }
+          ]}
+          footerContent={[
+            { value: "INSTRUCCIONES IMPORTANTES:", classNames: "mb-1 font-bold" },
+            { value: "1. Presentar este ticket el día de la cita." },
+            { value: "2. Llevar identificación oficial." },
+            { value: "3. Debes estar listo para la toma fotográfica." },
+            { value: "Departamento de Sistemas y Tecnologias de la información", classNames: "mt-4" },
+          ]}
+          showPreview={true}
+          showDownload={true}
+          showPrint={true}
+          onPrint={() => console.log("Impresión iniciada")}
+        />
       </div>
     </div>
   );

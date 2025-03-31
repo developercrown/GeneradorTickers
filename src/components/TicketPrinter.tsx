@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import html2canvas from 'html2canvas';
 import LogotipoSistemas from "../assets/logosistemas.svg"
 import LogotipoUPN from "../assets/LogotipoOficialUPN164-2025.svg"
+import { Download, Printer } from 'lucide-react';
 
 // Tipos para las props del componente
 type TicketRow = {
@@ -20,6 +22,8 @@ type TicketPrinterProps = {
     highlightContent?: TicketRow[];
     footerContent?: FooterItem[];
     showPreview?: boolean;
+    showDownload?: boolean;
+    showPrint?: boolean;
     onPrint?: () => void;
 };
 
@@ -30,8 +34,11 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
     highlightContent = [],
     footerContent = [],
     showPreview = true,
+    showDownload = false,
+    showPrint = true,
     onPrint,
 }) => {
+    const canvasRef = useRef(null);
     // Función para generar el HTML completo del ticket
     const generateTicketHTML = () => {
         return `<!DOCTYPE html>
@@ -319,7 +326,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
     };
 
     // Función para imprimir el ticket
-    const printTicket = () => {
+    const handlePrintTicket = () => {
         const ticketHTML = generateTicketHTML();
         const printWindow = window.open('', '_blank');
 
@@ -337,11 +344,22 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
         }
     };
 
+    const handleDownloadTicket = async () => {
+        if (canvasRef.current) {
+            const canvas = await html2canvas(canvasRef.current);
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'cita-credencializacion.png';
+            link.href = dataUrl;
+            link.click();
+        }
+    };
+
     // Renderizar la previsualización si showPreview es true
     return (
-        <div className="flex flex-col items-center bg-white">
+        <div className="flex flex-col items-center">
             {showPreview && (
-                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4">
+                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white" ref={canvasRef}>
                     <div className="ticket">
                         <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
                             <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={LogotipoSistemas} alt="Logo Sistemas" />
@@ -384,13 +402,23 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                     </div>
                 </div>
             )}
-
-            <button
-                onClick={printTicket}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-                Imprimir Ticket
-            </button>
+            <div className="actions w-full flex items-center justify-around">
+                {
+                    showDownload && <button
+                        onClick={handleDownloadTicket}
+                        className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        <Download size={24} />
+                    </button>
+                }
+                {
+                    showPrint && <button
+                    onClick={handlePrintTicket}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                >
+                    <Printer size={24} />
+                </button>}
+            </div>
         </div>
     );
 };
