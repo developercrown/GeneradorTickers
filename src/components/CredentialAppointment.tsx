@@ -83,7 +83,31 @@ const CredentialAppointment = () => {
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
       <div className="bg-gray-800 p-6 rounded-xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Datos de la Cita</h2>
-        <div className="space-y-4">
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Folio Recibo</label>
+            <input
+              type="text"
+              name="folioRecibo"
+              value={formData.folioRecibo}
+              onChange={handleInputChange}
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Folio Pago</label>
+            <input
+              type="text"
+              name="folioPago"
+              value={formData.folioPago}
+              onChange={handleInputChange}
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 mt-4">
           <div>
             <label className="block text-sm font-medium mb-1">Nombre Completo</label>
             <input
@@ -158,28 +182,7 @@ const CredentialAppointment = () => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Folio Recibo</label>
-              <input
-                type="text"
-                name="folioRecibo"
-                value={formData.folioRecibo}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Folio Pago</label>
-              <input
-                type="text"
-                name="folioPago"
-                value={formData.folioPago}
-                onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
-              />
-            </div>
-          </div>
+
 
         </div>
       </div>
@@ -189,15 +192,15 @@ const CredentialAppointment = () => {
           title={ticketData.title}
           subtitle={ticketData.subtitle}
           ticketContent={[
-            { label: "Folio Recibo", value: `${formData.folioRecibo}` },
-            { label: "Folio Pago", value: `${formData.folioPago}` },
-            { label: "Nombre", value: formData.nombre },
-            { label: "Grupo", value: parseGrupo(formData.grado, formData.grupo) },
-            { label: "Carrera", value: (formData.carrera).toUpperCase() }
+            { label: "Folio Recibo", value: `${formData.folioRecibo}`, type: "string" },
+            { label: "Folio Pago", value: `${formData.folioPago}`, type: "string" },
+            { label: "Nombre", value: formData.nombre, type: "string" },
+            { label: "Grupo", value: parseGrupo(formData.grado, formData.grupo), type: "string" },
+            { label: "Carrera", value: (formData.carrera).toUpperCase(), type: "string" }
           ]}
           highlightContent={[
-            { label: "Fecha", value: formData.fecha },
-            { label: "Hora", value: `${formData.hora} hrs` }
+            { label: "Fecha", value: formData.fecha, type: "string" },
+            { label: "Hora", value: `${formData.hora} hrs`, type: "string" }
           ]}
           footerContent={[
             { value: "INSTRUCCIONES IMPORTANTES:", classNames: "mb-1 font-bold" },

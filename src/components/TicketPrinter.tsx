@@ -7,7 +7,8 @@ import { Download, Printer } from 'lucide-react';
 // Tipos para las props del componente
 type TicketRow = {
     label: string;
-    value: string;
+    value?: string | null;
+    type: "string" | "number" | "image" | "qr"
 };
 
 type FooterItem = {
@@ -282,22 +283,58 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
         </div>
         
         <div class="ticket-content">
-            ${ticketContent.map(row => `
-            <div class="ticket-row">
-                <span class="ticket-label">${row.label}:</span>
-                <span class="ticket-value">${row.value}</span>
-            </div>
-            `).join('')}
+            ${ticketContent.map(row => {
+            if (row.type == "qr") {
+                return `
+                    <div class="ticket-row">
+                        <img
+                            src={${row.value}}
+                            alt="QR Code"
+                            className="w-[300px] h-[300px] mx-auto mb-4"
+                            />
+                    </div>
+                    `
+            } else if (row.type == "image") {
+                return `
+                    <div class="ticket-row">
+                        <span class="ticket-label">${row.label}:</span>
+                        <span class="ticket-value">${row.value}</span>
+                    </div>
+                    `
+            } else {
+                return `
+                    <div class="ticket-row">
+                        <span class="ticket-label">${row.label}:</span>
+                        <span class="ticket-value">${row.value}</span>
+                    </div>
+                    `
+            }
+        }).join('')}
         </div>
         
         ${highlightContent.length > 0 ? `
         <div class="highlight-row">
-            ${highlightContent.map(row => `
-            <div class="ticket-row" style="border-bottom:none; margin-bottom:0;">
+            ${highlightContent.map(row => {
+            if (row.type == "qr") {
+                return `
+                    <div class="ticket-row flex" style="border-bottom:none; margin-bottom:0; flex-direction: column;">
+                        <span class="ticket-label highlight-label text-center">${row.label}:</span>
+                        <img
+                            src="${row.value}"
+                            alt="QR Code"
+                            className="mx-auto mb-4 ml-4"
+                            style="width: 180px; height: 180px; margin-bottom: 4px; margin-left: 6px;"
+                            />
+                    </div>
+                    `;
+            } else {
+                return `<div class="ticket-row" style="border-bottom:none; margin-bottom:0;">
                 <span class="ticket-label highlight-label">${row.label}:</span>
                 <span class="ticket-value highlight-label">${row.value}</span>
-            </div>
-            `).join('')}
+            </div>`;
+            }
+        }
+        ).join('')}
         </div>
         ` : ''}
         
@@ -317,8 +354,8 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                 window.print();
                 setTimeout(function() {
                     window.close();
-                }, 200);
-            }, 300);
+                }, 50);
+            }, 50);
         };
     </script>
 </body>
@@ -349,7 +386,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
             const canvas = await html2canvas(canvasRef.current);
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'cita-credencializacion.png';
+            link.download = 'myTicket.png';
             link.href = dataUrl;
             link.click();
         }
@@ -373,22 +410,63 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                         </div>
 
                         <div className="ticket-content w-full my-[2mm]">
-                            {ticketContent.map((row, index) => (
-                                <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                    <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                    <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
-                                </div>
-                            ))}
+                            {
+                                ticketContent.map((row, index) => {
+                                    if (row.type == "qr") {
+                                        return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                            <img
+                                                src={row.value}
+                                                alt="QR Code"
+                                                className="w-[300px] h-[300px] mx-auto mb-4"
+                                            />
+                                        </div>
+
+                                    } else if (row.type == "image") {
+                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                                        </div>
+                                    } else {
+                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                                        </div>
+                                    }
+                                })
+                            }
                         </div>
 
                         {highlightContent.length > 0 && (
                             <div className="highlight-row">
-                                {highlightContent.map((row, index) => (
-                                    <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
-                                        <span className="ticket-label font-bold text-black">{row.label}:</span>
-                                        <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
-                                    </div>
-                                ))}
+                                {
+                                    highlightContent.map((row, index) => {
+                                        if (row.type == "qr") {
+                                            return row.value && <div key={index} className="ticket-row flex flex-col justify-between mb-0 pb-[1mm] border-b border-dotted border-black">
+                                                <span className="ticket-label font-bold text-gray-700 text-sm text-center">{row.label}:</span>
+                                                <img
+                                                    src={row.value}
+                                                    alt="QR Code"
+                                                    className="w-[180px] h-[180px] mx-auto mb-0"
+                                                />
+                                            </div>
+
+                                        } else if (row.type == "image") {
+                                            return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                                <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                                <img
+                                                    src={row.value}
+                                                    alt="QR Code"
+                                                    className="w-[300px] h-[300px] mx-auto mb-4"
+                                                />
+                                            </div>
+                                        } else {
+                                            return <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
+                                                <span className="ticket-label font-bold text-black">{row.label}:</span>
+                                                <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
+                                            </div>
+                                        }
+                                    })
+                                }
                             </div>
                         )}
 
@@ -413,11 +491,11 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                 }
                 {
                     showPrint && <button
-                    onClick={handlePrintTicket}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                >
-                    <Printer size={24} />
-                </button>}
+                        onClick={handlePrintTicket}
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        <Printer size={24} />
+                    </button>}
             </div>
         </div>
     );
