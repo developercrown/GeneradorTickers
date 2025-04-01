@@ -396,7 +396,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
     return (
         <div className="flex flex-col items-center">
             {showPreview && (
-                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white" ref={canvasRef}>
+                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
                     <div className="ticket">
                         <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
                             <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={LogotipoSistemas} alt="Logo Sistemas" />
@@ -480,11 +480,11 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                     </div>
                 </div>
             )}
-            <div className="actions w-full flex items-center justify-around">
+            <div className="actions w-full flex items-center justify-around gap-4">
                 {
                     showDownload && <button
                         onClick={handleDownloadTicket}
-                        className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] transition-all duration-200"
                     >
                         <Download size={24} />
                     </button>
@@ -492,7 +492,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                 {
                     showPrint && <button
                         onClick={handlePrintTicket}
-                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 active:scale-[0.98] transition-all duration-200"
                     >
                         <Printer size={24} />
                     </button>}

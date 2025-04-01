@@ -191,7 +191,7 @@ const WifiQRCode = () => {
 
   return (
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div className="bg-gray-800 p-6 rounded-xl">
+      <div className="bg-gray-800/50 border border-gray-700/30  rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-center">Emsión de enlace Inalambrico</h2>
 
         <div className="space-y-4 mt-4">
@@ -203,7 +203,7 @@ const WifiQRCode = () => {
               name="requester"
               value={formData.requester}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             />
           </div>
 
@@ -213,7 +213,7 @@ const WifiQRCode = () => {
               name="ssid"
               value={formData.ssid}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             >
               {AVAILABLE_SSID_MAP.map((item, key) => (
                 <option key={key} value={item.value}>{item.label}</option>
@@ -223,7 +223,7 @@ const WifiQRCode = () => {
 
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <div className="flex w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <div className="flex w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
               <input
                 type="text"
                 name="password"
@@ -240,7 +240,7 @@ const WifiQRCode = () => {
               name="hidden"
               value={formData.hidden}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             >
               {PRIVACY_OPTIONS.map((item, key) => (
                 <option key={key} value={item.value}>{item.label}</option>
@@ -254,7 +254,7 @@ const WifiQRCode = () => {
               name="expiration"
               value={formData.expiration}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             >
               {EXPIRATION_OPTIONS.map((item, key) => (
                 <option key={key} value={item.value}>{item.label}</option>
@@ -262,7 +262,7 @@ const WifiQRCode = () => {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 text-end">
+          <div className="grid grid-cols-1 gap-4 text-center">
             <div>
               <label className="block text-sm font-medium mb-1">Fecha de emisión: {formData.timedate}</label>
             </div>

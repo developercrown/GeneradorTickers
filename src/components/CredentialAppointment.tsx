@@ -80,8 +80,8 @@ const CredentialAppointment = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div className="bg-gray-800 p-6 rounded-xl">
+    <div className="m-0 p-0 flex flex-col lg:flex-row">
+      <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30 w-full lg:w-8/12">
         <h2 className="text-2xl font-bold mb-6 text-center">Datos de la Cita</h2>
 
         <div className="grid grid-cols-2 gap-4">
@@ -92,7 +92,7 @@ const CredentialAppointment = () => {
               name="folioRecibo"
               value={formData.folioRecibo}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             />
           </div>
           <div>
@@ -102,7 +102,7 @@ const CredentialAppointment = () => {
               name="folioPago"
               value={formData.folioPago}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             />
           </div>
         </div>
@@ -116,7 +116,7 @@ const CredentialAppointment = () => {
               name="nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ const CredentialAppointment = () => {
                 name="grado"
                 value={formData.grado}
                 onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+                className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
               >
                 {grados.map(grado => (
                   <option key={grado} value={grado}>{grado}</option>
@@ -139,7 +139,7 @@ const CredentialAppointment = () => {
                 name="grupo"
                 value={formData.grupo}
                 onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+                className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
               >
                 {grupos.map(grupo => (
                   <option key={grupo} value={grupo}>{grupo}</option>
@@ -153,7 +153,7 @@ const CredentialAppointment = () => {
               name="carrera"
               value={formData.carrera}
               onChange={handleInputChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
             >
               {carreras.map((carrera, key) => (
                 <option key={key} value={carrera.value}>{carrera.label}</option>
@@ -168,7 +168,7 @@ const CredentialAppointment = () => {
                 name="fecha"
                 value={formData.fecha}
                 onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+                className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
               />
             </div>
             <div>
@@ -178,7 +178,7 @@ const CredentialAppointment = () => {
                 name="hora"
                 value={formData.hora}
                 onChange={handleInputChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
+                className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
               />
             </div>
           </div>
@@ -187,7 +187,7 @@ const CredentialAppointment = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full lg:w-4/12 overflow-hidden flex flex-col justify-center items-center">
         <TicketPrinter
           title={ticketData.title}
           subtitle={ticketData.subtitle}
