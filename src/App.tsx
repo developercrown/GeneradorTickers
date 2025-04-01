@@ -6,9 +6,7 @@ import {
   // Key, 
   // Users, 
   // Share2,
-  ChevronRight,
   CircuitBoard,
-  Sparkles,
   Mail,
   Phone,
   Globe,
@@ -158,27 +156,13 @@ function App() {
         <header className="px-6 py-2 bg-gradient-to-r from-gray-900/50 to-gray-800/30 border-b border-gray-700/50 backdrop-blur-xl">
           <div className="flex items-center gap-3">
             <CircuitBoard className="w-8 h-8 text-blue-400" />
-            <div>
+            <div className='flex flex-col w-4/12'>
               <h1 className="text-md font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                 Sistema de Tickets
               </h1>
               <p className="text-xs text-gray-400">Centro de Servicios Estudiantiles</p>
             </div>
-          </div>
-        </header>
-
-        <div className="p-4 px-1 flex-1 m-0 overflow-hidden">
-          <div className="h-full flex gap-4 px-3">
-            {/* Sidebar Navigation */}
-            <nav className="w-64 shrink-0">
-              <div className="h-full bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden">
-                <div className="p-3 bg-gradient-to-b from-gray-800/50 to-transparent border-b border-gray-700/50">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-blue-400" />
-                    <span className="font-semibold">Servicios Disponibles</span>
-                  </div>
-                </div>
-                <div className="p-2 space-y-1.5 max-h-[650px] overflow-y-auto">
+            <div className="p-2 space-y-1.5 max-h-[650px] overflow-y-auto flex flex-row justify-center w-8/12">
                   {menuItems.map((item) => (
                     <button
                       key={item.id}
@@ -209,17 +193,26 @@ function App() {
                           {item.description}
                         </p>
                       </div>
-                      <ChevronRight 
-                        className={`w-5 h-5 transition-all duration-300
-                          ${activeSection === item.id 
-                            ? 'opacity-100 translate-x-0 text-white' 
-                            : 'opacity-0 -translate-x-2 text-gray-400'}`}
-                      />
                     </button>
                   ))}
                 </div>
+          </div>
+        </header>
+
+        <div className="p-4 px-1 flex-1 m-0 overflow-hidden">
+          <div className="h-full flex gap-4 px-3">
+            {/* Sidebar Navigation */}
+            {/* <nav className="w-64 shrink-0">
+              <div className="h-full bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden">
+                <div className="p-3 bg-gradient-to-b from-gray-800/50 to-transparent border-b border-gray-700/50">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-blue-400" />
+                    <span className="font-semibold">Servicios Disponibles</span>
+                  </div>
+                </div>
+                
               </div>
-            </nav>
+            </nav> */}
 
             {/* Main Content Area */}
             <main className="flex-1 bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden">             
