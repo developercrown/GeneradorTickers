@@ -5,17 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "devh": "vite --host 192.168.100.15",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
-    "lucide-react": "^0.344.0",
     "qrcode": "^1.5.3",
+    "lucide-react": "^0.344.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.22.3"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

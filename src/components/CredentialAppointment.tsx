@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 
 import TicketPrinter from './TicketPrinter';
+import { ArrowDownToDotIcon, CalendarPlus } from 'lucide-react';
 
 const ticketData = {
   title: "Cita para Credencialización",
@@ -79,6 +80,34 @@ const CredentialAppointment = () => {
     return (`${grado}${grupo}`).toUpperCase();
   }
 
+  const addMinutesToTime = (timeString: string, minutesToAdd: number): string =>{
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    date.setMinutes(date.getMinutes() + minutesToAdd);
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  }
+
+  const handleNewAppointment = () => {
+    let id: string | number = formData.folioRecibo;
+    const newTime = addMinutesToTime(formData.hora, 15);
+    if(isNaN(parseInt(id))){
+      id="";
+    } else {
+      id = parseInt(id) + 1;
+    }
+    setFormData({
+      nombre: '',
+      grupo: formData.grupo,
+      grado: formData.grado,
+      carrera: formData.carrera,
+      fecha: formData.fecha,
+      hora: newTime,
+      folioRecibo: id+"",
+      folioPago: "",
+    })
+  }
+
   return (
     <div className="m-0 p-0 flex flex-col lg:flex-row">
       <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30 w-full lg:w-8/12">
@@ -87,13 +116,18 @@ const CredentialAppointment = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Folio Recibo</label>
-            <input
-              type="text"
-              name="folioRecibo"
-              value={formData.folioRecibo}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
-            />
+            <div className="icontrols flex flex-row gap-2 items-center justify-center">
+              <button className="bg-orange-500 w-12 h-10 flex items-center justify-center rounded-lg" onClick={handleNewAppointment}>
+                <CalendarPlus size={24} />
+              </button>
+              <input
+                type="text"
+                name="folioRecibo"
+                value={formData.folioRecibo}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Folio Pago</label>

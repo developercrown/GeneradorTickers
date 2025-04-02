@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { QrCode, History, Trash2, Key } from 'lucide-react';
 
 import TicketPrinter from './TicketPrinter';
+import Sidebar from './Sidebar';
 
 const ticketData = {
   title: "WIFI UPN164",
@@ -110,7 +111,8 @@ const createPasswordWiFi = (opciones: {
 const WifiQRCode = () => {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [qrCode, setQRCode] = useState('');
-  
+  const [sidebarVisibility, setSidebarVisibility] = useState<boolean>(false);
+
   const generateQRCode = async () => {
     if (!formData.ssid || !formData.password) {
       alert('Por favor ingrese SSID y contraseña');
@@ -121,7 +123,7 @@ const WifiQRCode = () => {
       const QRCode = await import('qrcode');
       const wifiString = `WIFI:T:WPA;S:${formData.ssid};P:${formData.password};H:${formData.hidden === "Oculto" ? 'true' : 'false'};`;
       console.log(wifiString);
-      
+
       const qrCodeDataURL = await QRCode.toDataURL(wifiString, {
         width: 300,
         margin: 2,
@@ -189,7 +191,12 @@ const WifiQRCode = () => {
     setFormData(prev => ({ ...prev, ["password"]: newPass }));
   }
 
-  return (
+  const handleHideSidebar = () => {
+    setSidebarVisibility(false);
+  }
+
+  return <>
+    { sidebarVisibility && <Sidebar onHide={handleHideSidebar}/>}
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
       <div className="bg-gray-800/50 border border-gray-700/30  rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-center">Emsión de enlace Inalambrico</h2>
@@ -268,8 +275,9 @@ const WifiQRCode = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center text-center">
-          <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/2 mt-4" onClick={generateQRCode}>Crear Código</button>
+        <div className="flex items-center justify-center text-center gap-2">
+          <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/3 mt-4" onClick={generateQRCode}>Crear Código</button>
+          <button className="bg-orange-700 hover:bg-orange-600 active:bg-orange-800 p-2 rounded-sm w-1/3 mt-4" onClick={()=>setSidebarVisibility(true)}>Ver Historial</button>
         </div>
       </div>
 
@@ -318,7 +326,7 @@ const WifiQRCode = () => {
         />
       </div>
     </div>
-  );
+  </>;
 };
 
 export default WifiQRCode;

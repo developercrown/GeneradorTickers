@@ -141,7 +141,7 @@ function App() {
   };
 
   return (
-    <div className="w-[1080px] h-[800px] bg-[#0A0F1C] text-white relative overflow-hidden">
+    <div className="w-[1080px] h-[830px] bg-[#0A0F1C] text-white relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full">
@@ -160,7 +160,7 @@ function App() {
               <h1 className="text-md font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                 Sistema de Tickets
               </h1>
-              <p className="text-xs text-gray-400">Centro de Servicios Estudiantiles</p>
+              <p className="text-xs text-gray-400">Centro de Servicios Del Área de Sistemas</p>
             </div>
             <div className="p-2 space-y-1.5 max-h-[650px] overflow-y-auto flex flex-row justify-center w-8/12">
                   {menuItems.map((item) => (
@@ -201,21 +201,8 @@ function App() {
 
         <div className="p-4 px-1 flex-1 m-0 overflow-hidden">
           <div className="h-full flex gap-4 px-3">
-            {/* Sidebar Navigation */}
-            {/* <nav className="w-64 shrink-0">
-              <div className="h-full bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden">
-                <div className="p-3 bg-gradient-to-b from-gray-800/50 to-transparent border-b border-gray-700/50">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-blue-400" />
-                    <span className="font-semibold">Servicios Disponibles</span>
-                  </div>
-                </div>
-                
-              </div>
-            </nav> */}
-
             {/* Main Content Area */}
-            <main className="flex-1 bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden">             
+            <main className="flex-1 bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-x-hidden overflow-y-auto max-h-[1080px] h-full">             
               <div className="p-2">
                 <div className="bg-gray-800/30 rounded-xl p-2 backdrop-blur-md">
                   <div key={activeSection} className={`fade-enter ${isTransitioning ? 'opacity-0' : ''}`}>

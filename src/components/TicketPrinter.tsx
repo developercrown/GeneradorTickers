@@ -41,13 +41,13 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
 }) => {
     const canvasRef = useRef(null);
     // Función para generar el HTML completo del ticket
-    const generateTicketHTML = () => {
+    const generateTicketHTML = (logosistemas: string, logoupn: string) => {
         return `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
+    <title>TicketsGenerator 1.0</title>
     <style>
         /* Reset y estilos base compatibles con Tailwind */
         * {
@@ -272,8 +272,8 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
 <body>
     <div class="ticket">
         <header class="header">
-            <img class="imgSISTEMAS" src="/src/assets/logosistemas.svg" alt="Logo Sistemas">
-            <img class="imgUPN" src="/src/assets/LogotipoOficialUPN164-2025.svg" alt="Logo UPN">
+            <img class="imgSISTEMAS" src="${logosistemas}" alt="Logo Sistemas">
+            <img class="imgUPN" src="${logoupn}" alt="Logo UPN">
         </header>
         
         <div class="title-container">
@@ -349,156 +349,206 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
     
     <script>
         // Autoimpresión al cargar
-        window.onload = function() {
-            setTimeout(function() {
-                window.print();
-                setTimeout(function() {
-                    window.close();
-                }, 50);
-            }, 50);
-        };
+        // window.onload = function() {
+        //     setTimeout(function() {
+        //         window.print();
+        //         setTimeout(function() {
+        //             window.close();
+        //         }, 50);
+        //     }, 50);
+        // };
     </script>
 </body>
 </html>`;
     };
 
-    // Función para imprimir el ticket
-    const handlePrintTicket = () => {
-        const ticketHTML = generateTicketHTML();
-        const printWindow = window.open('', '_blank');
-
-        if (printWindow) {
-            printWindow.document.open();
-            printWindow.document.write(ticketHTML);
-            printWindow.document.close();
-
-            // Llamar al callback si existe
-            if (onPrint) {
-                onPrint();
+    async function convertirImagenABase64(url: any): Promise<string> {
+        try {
+            // Si ya es un string base64, retornarlo directamente
+            if (url.startsWith('data:image')) {
+                return url;
             }
-        } else {
-            console.error('No se pudo abrir la ventana de impresión');
+
+            // Para imágenes en el filesystem (React/Webpack)
+            if (typeof url === 'string' && url.startsWith('/')) {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            // Para imports directos de imágenes (require o import)
+            if (typeof url === 'object' && url.default) {
+                const response = await fetch(url.default);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            throw new Error('Formato de imagen no soportado');
+        } catch (error) {
+            console.error('Error al convertir imagen a Base64:', error);
+            return ''; // O podrías retornar un placeholder en base64
         }
-    };
+    }
 
-    const handleDownloadTicket = async () => {
-        if (canvasRef.current) {
-            const canvas = await html2canvas(canvasRef.current);
-            const dataUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = 'myTicket.png';
-            link.href = dataUrl;
-            link.click();
+    // Función para imprimir el ticket
+    const handlePrintTicket = async () => {
+
+        const ls = await convertirImagenABase64(LogotipoSistemas);
+        const lupn = await convertirImagenABase64(LogotipoUPN);
+
+        try {
+            const ticketHTML = generateTicketHTML(ls, lupn);
+            const result = await window.electron.ipcRenderer.invoke('print-ticket', ticketHTML);
+            if (!result.success) {
+                console.log(`Error al imprimir: ${result.error || 'Error desconocido'}`);
+            }
+        } catch (error) {
+            console.error('Error al invocar print-ticket:', error);
         }
-    };
+    // const printWindow = window.open('', '_blank');
 
-    // Renderizar la previsualización si showPreview es true
-    return (
-        <div className="flex flex-col items-center">
-            {showPreview && (
-                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
-                    <div className="ticket">
-                        <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
-                            <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={LogotipoSistemas} alt="Logo Sistemas" />
-                            <img className="imgUPN h-[25mm] w-auto object-contain" src={LogotipoUPN} alt="Logo UPN" />
-                        </header>
+    // if (printWindow) {
+    //     printWindow.document.open();
+    //     printWindow.document.write(ticketHTML);
+    //     printWindow.document.close();
 
-                        <div className="title-container text-center mt-[1.5mm]">
-                            <h1 className="title text-lg font-bold uppercase tracking-wider text-black mb-[2mm]">{title}</h1>
-                            <div className="title-decoration h-1 bg-gradient-to-r from-transparent via-black to-transparent mx-auto w-[70%] my-[3mm]"></div>
-                            <p className="subtitle text-xs font-bold text-black tracking-wider">{subtitle}</p>
-                        </div>
+    //     // Llamar al callback si existe
+    //     if (onPrint) {
+    //         onPrint();
+    //     }
+    // } else {
+    //     console.error('No se pudo abrir la ventana de impresión');
+    // }
+};
 
-                        <div className="ticket-content w-full my-[2mm]">
+const handleDownloadTicket = async () => {
+    if (canvasRef.current) {
+        const canvas = await html2canvas(canvasRef.current);
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'myTicket.png';
+        link.href = dataUrl;
+        link.click();
+    }
+};
+
+// Renderizar la previsualización si showPreview es true
+return (
+    <div className="flex flex-col items-center">
+        {showPreview && (
+            <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
+                <div className="ticket">
+                    <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
+                        <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={LogotipoSistemas} alt="Logo Sistemas" />
+                        <img className="imgUPN h-[25mm] w-auto object-contain" src={LogotipoUPN} alt="Logo UPN" />
+                    </header>
+
+                    <div className="title-container text-center mt-[1.5mm]">
+                        <h1 className="title text-lg font-bold uppercase tracking-wider text-black mb-[2mm]">{title}</h1>
+                        <div className="title-decoration h-1 bg-gradient-to-r from-transparent via-black to-transparent mx-auto w-[70%] my-[3mm]"></div>
+                        <p className="subtitle text-xs font-bold text-black tracking-wider">{subtitle}</p>
+                    </div>
+
+                    <div className="ticket-content w-full my-[2mm]">
+                        {
+                            ticketContent.map((row, index) => {
+                                if (row.type == "qr") {
+                                    return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                        <img
+                                            src={row.value}
+                                            alt="QR Code"
+                                            className="w-[300px] h-[300px] mx-auto mb-4"
+                                        />
+                                    </div>
+
+                                } else if (row.type == "image") {
+                                    return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                        <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                        <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                                    </div>
+                                } else {
+                                    return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                        <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                        <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                                    </div>
+                                }
+                            })
+                        }
+                    </div>
+
+                    {highlightContent.length > 0 && (
+                        <div className="highlight-row">
                             {
-                                ticketContent.map((row, index) => {
+                                highlightContent.map((row, index) => {
                                     if (row.type == "qr") {
+                                        return row.value && <div key={index} className="ticket-row flex flex-col justify-between mb-0 pb-[1mm] border-b border-dotted border-black">
+                                            <span className="ticket-label font-bold text-gray-700 text-sm text-center">{row.label}:</span>
+                                            <img
+                                                src={row.value}
+                                                alt="QR Code"
+                                                className="w-[180px] h-[180px] mx-auto mb-0"
+                                            />
+                                        </div>
+
+                                    } else if (row.type == "image") {
                                         return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
                                             <img
                                                 src={row.value}
                                                 alt="QR Code"
                                                 className="w-[300px] h-[300px] mx-auto mb-4"
                                             />
                                         </div>
-
-                                    } else if (row.type == "image") {
-                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
-                                        </div>
                                     } else {
-                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                                        return <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
+                                            <span className="ticket-label font-bold text-black">{row.label}:</span>
+                                            <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
                                         </div>
                                     }
                                 })
                             }
                         </div>
+                    )}
 
-                        {highlightContent.length > 0 && (
-                            <div className="highlight-row">
-                                {
-                                    highlightContent.map((row, index) => {
-                                        if (row.type == "qr") {
-                                            return row.value && <div key={index} className="ticket-row flex flex-col justify-between mb-0 pb-[1mm] border-b border-dotted border-black">
-                                                <span className="ticket-label font-bold text-gray-700 text-sm text-center">{row.label}:</span>
-                                                <img
-                                                    src={row.value}
-                                                    alt="QR Code"
-                                                    className="w-[180px] h-[180px] mx-auto mb-0"
-                                                />
-                                            </div>
-
-                                        } else if (row.type == "image") {
-                                            return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                                <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                                <img
-                                                    src={row.value}
-                                                    alt="QR Code"
-                                                    className="w-[300px] h-[300px] mx-auto mb-4"
-                                                />
-                                            </div>
-                                        } else {
-                                            return <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
-                                                <span className="ticket-label font-bold text-black">{row.label}:</span>
-                                                <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
-                                            </div>
-                                        }
-                                    })
-                                }
-                            </div>
-                        )}
-
-                        {footerContent.length > 0 && (
-                            <div className="footer text-center mt-[1mm] pt-[3mm] border-t-2 border-dashed border-black text-xs text-black leading-snug">
-                                {footerContent.map((item, index) => (
-                                    <div key={index} className={item.classNames || ''}>{item.value}</div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    {footerContent.length > 0 && (
+                        <div className="footer text-center mt-[1mm] pt-[3mm] border-t-2 border-dashed border-black text-xs text-black leading-snug">
+                            {footerContent.map((item, index) => (
+                                <div key={index} className={item.classNames || ''}>{item.value}</div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            )}
-            <div className="actions w-full flex items-center justify-around gap-4">
-                {
-                    showDownload && <button
-                        onClick={handleDownloadTicket}
-                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] transition-all duration-200"
-                    >
-                        <Download size={24} />
-                    </button>
-                }
-                {
-                    showPrint && <button
-                        onClick={handlePrintTicket}
-                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 active:scale-[0.98] transition-all duration-200"
-                    >
-                        <Printer size={24} />
-                    </button>}
             </div>
+        )}
+        <div className="actions w-full flex items-center justify-around gap-4">
+            {
+                showDownload && <button
+                    onClick={handleDownloadTicket}
+                    className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] transition-all duration-200"
+                >
+                    <Download size={24} />
+                </button>
+            }
+            {
+                showPrint && <button
+                    onClick={handlePrintTicket}
+                    className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 active:scale-[0.98] transition-all duration-200"
+                >
+                    <Printer size={24} />
+                </button>}
         </div>
-    );
+    </div>
+);
 };
 
 export default TicketPrinter;
