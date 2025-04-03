@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain  } = require('electron'); // <-- Añade Tray, Menu y nativeImage
 const path = require('path');
-const devMode = true;
+const devMode = false;
 let mainWindow;
 let tray = null;
 let appIsQuitting = false; // <-- Define esta variable para controlar el cierre
