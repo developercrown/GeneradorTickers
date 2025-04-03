@@ -10,5 +10,13 @@
     "electron": "^23.0.0",
     "electron-packager": "^17.1.2",
     "install": "^0.13.0"
+  },
+  "build": {
+    "appId": "com.devcrown.ticketgenerator",
+    "productName": "TicketGenerator",
+    "win": {
+      "target": "nsis",
+      "icon": "ticket.ico"
+    }
   }
 }

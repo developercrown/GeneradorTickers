@@ -27,7 +27,8 @@ function createWindow() {
 
     // Carga la URL en modo desarrollo o el archivo en producción
     devMode 
-        ? mainWindow.loadURL("http://192.168.100.15:5173")
+        // ? mainWindow.loadURL("http://192.168.100.15:5173")
+        ? mainWindow.loadURL("http://localhost:5173")
         : mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 
     // Intenta cargar el ícono de la bandeja (usa try-catch para evitar errores)
@@ -109,7 +110,7 @@ app.whenReady().then(()=>{
                 silent: false,          // Mostrar diálogo de impresión
                 printBackground: true,  // Imprimir fondos
                 // deviceName: 'POS58 Printer en 192.168.100.210', // Ruta de red para impresora
-                deviceName: '\\\\192.168.100.210\\POS58 Printer', // Ruta de red para impresora
+                deviceName: defaultPrinterName, // Ruta de red para impresora
                 pageSize: {
                     height: 100000,    // Altura suficiente para contenido dinámico
                     width: 58000       // 58mm en hundredths of millimeters
