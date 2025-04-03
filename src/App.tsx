@@ -12,7 +12,13 @@ import {
   Globe,
   Instagram,
   Facebook,
-  Twitter
+  Twitter,
+  RefreshCcwDot,
+  RefreshCw,
+  RefreshCcwDotIcon,
+  RefreshCwOff,
+  Loader,
+  Loader2
 } from 'lucide-react';
 import CredentialAppointment from './components/CredentialAppointment';
 import WifiQRCode from './components/WifiQRCode';
@@ -140,8 +146,14 @@ function App() {
     }
   };
 
+  const handleReload = () => {
+    console.log("rebooting");    
+    window.electron.ipcRenderer.invoke('soft-reboot');
+  }
+
   return (
-    <div className="w-[1080px] h-[830px] bg-[#0A0F1C] text-white relative overflow-hidden">
+    <div className="w-screen h-screen p-0 m-0 bg-[#0A0F1C] text-white relative opacity-0 animate-in-window">
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full">
@@ -151,9 +163,9 @@ function App() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 p-0 m-0">
+      <>
         {/* Header */}
-        <header className="px-6 py-2 bg-gradient-to-r from-gray-900/50 to-gray-800/30 border-b border-gray-700/50 backdrop-blur-xl">
+        <header className="z-10 px-6 py-2 bg-gradient-to-r from-gray-900/50 to-gray-800/30 border-b border-gray-700/50 backdrop-blur-xl w-full sticky top-0">
           <div className="flex items-center gap-3">
             <CircuitBoard className="w-8 h-8 text-blue-400" />
             <div className='flex flex-col w-4/12'>
@@ -196,6 +208,7 @@ function App() {
                     </button>
                   ))}
                 </div>
+                <button className="text-red-500 absolute -top-1 -left-1 w-10 h-8 flex items-center justify-center rounded-sm hover:text-yellow-600 hover:scale-110 active:scale-95 active:text-red-400 transition-all cursor-pointer" onClick={handleReload}><Loader size={18} className='hover:animate-spin' /></button>
           </div>
         </header>
 
@@ -213,7 +226,7 @@ function App() {
             </main>
           </div>
         </div>
-      </div>
+      </>
     </div>
   );
 }

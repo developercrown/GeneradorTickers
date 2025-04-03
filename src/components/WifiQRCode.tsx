@@ -197,7 +197,7 @@ const WifiQRCode = () => {
 
   return <>
     { sidebarVisibility && <Sidebar onHide={handleHideSidebar}/>}
-    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div className="max-w-4xl h-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
       <div className="bg-gray-800/50 border border-gray-700/30  rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-center">Emsión de enlace Inalambrico</h2>
 
@@ -281,7 +281,7 @@ const WifiQRCode = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-start items-center overflow-y-auto h-[1200px]">
         <TicketPrinter
           title={ticketData.title}
           subtitle={ticketData.subtitle}

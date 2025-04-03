@@ -48,3 +48,18 @@
     animation: rotate 20s linear infinite;
   }
 }
+
+@keyframes animate-window-in {
+  0%{
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    overflow: hidden;
+  }
+}
+
+.animate-in-window{
+  overflow: hidden;
+  animation: animate-window-in ease 1s forwards
+}

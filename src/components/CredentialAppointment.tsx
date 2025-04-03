@@ -1,15 +1,29 @@
 import { useRef, useState, useEffect } from 'react';
 
 import TicketPrinter from './TicketPrinter';
-import { ArrowDownToDotIcon, CalendarPlus } from 'lucide-react';
+import { ArrowDownToDotIcon, CalendarPlus, Save } from 'lucide-react';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const ticketData = {
   title: "Cita para Credencialización",
   subtitle: "CORONA TICKET SYSTEM 1.0",
 };
 
+interface FormInterface {
+  nombre: string,
+  grupo: string,
+  grado: string,
+  carrera: string,
+  fecha: string,
+  hora: string,
+  folioRecibo: string | number,
+  folioPago: number
+}
+
 const CredentialAppointment = () => {
   const nombreInputRef = useRef<HTMLInputElement>(null);
+  const [saveFormState, setSaveFormState] = useState<boolean>(true);
+  const { value: savedFormData, setValue: saveFormData } = useLocalStorage<typeof formData>('credentialAppointmentData');
 
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -19,15 +33,20 @@ const CredentialAppointment = () => {
     };
   };
 
-  const [formData, setFormData] = useState({
-    nombre: '',
-    grupo: 'A',
-    grado: '1',
-    carrera: 'LIE',
-    fecha: getCurrentDateTime().date,
-    hora: getCurrentDateTime().time,
-    folioRecibo: '',
-    folioPago: '',
+  // Estado inicial que carga desde localStorage si existe
+  const [formData, setFormData] = useState<any>(() => {
+    const defaultData = {
+      nombre: '',
+      grupo: 'A',
+      grado: '1',
+      carrera: 'LIE',
+      fecha: getCurrentDateTime().date,
+      hora: getCurrentDateTime().time,
+      folioRecibo: '',
+      folioPago: '',
+    };
+    
+    return savedFormData || defaultData;
   });
 
   const carreras = [
@@ -73,14 +92,15 @@ const CredentialAppointment = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
+    setSaveFormState(false);
   };
 
   const parseGrupo = (grado: string = "", grupo: string = "") => {
     return (`${grado}${grupo}`).toUpperCase();
   }
 
-  const addMinutesToTime = (timeString: string, minutesToAdd: number): string =>{
+  const addMinutesToTime = (timeString: string, minutesToAdd: number): string => {
     const [hours, minutes] = timeString.split(':').map(Number);
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
@@ -91,10 +111,10 @@ const CredentialAppointment = () => {
   const handleNewAppointment = () => {
     let id: string | number = formData.folioRecibo;
     const newTime = addMinutesToTime(formData.hora, 15);
-    if(isNaN(parseInt(id))){
-      id="";
+    if (isNaN(parseInt(id+""))) {
+      id = "";
     } else {
-      id = parseInt(id) + 1;
+      id = parseInt(id+"") + 1;
     }
     setFormData({
       nombre: '',
@@ -103,16 +123,32 @@ const CredentialAppointment = () => {
       carrera: formData.carrera,
       fecha: formData.fecha,
       hora: newTime,
-      folioRecibo: id+"",
+      folioRecibo: id + "",
       folioPago: "",
     })
+    handleSaveCurrentFormData()
   }
+
+  const handleSaveCurrentFormData = () => {
+    if (!saveFormState) {
+      // Guardamos en localStorage
+      saveFormData(formData);
+      setSaveFormState(true);
+      
+      // Opcional: Mostrar feedback al usuario
+      console.log("Datos guardados en localStorage:", formData);
+    }
+  };
 
   return (
     <div className="m-0 p-0 flex flex-col lg:flex-row">
       <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30 w-full lg:w-8/12">
-        <h2 className="text-2xl font-bold mb-6 text-center">Datos de la Cita</h2>
-
+        <div className="titlebar flex flex-row w-full items-start justify-center">
+          <h2 className="text-2xl font-bold mb-6 text-center w-full">Datos de la Cita</h2>
+          <button className={`cursor pointer outline-none border-none float right-0 float-end transition-all ease-linear duration-75 text-white opacity-15 ${!saveFormState && "animate-pulse text-orange-400 opacity-100 hover:text-white hover:animate-pulse scale-105 hover:scale-125 active:scale-95"}`} onClick={handleSaveCurrentFormData}>
+            <Save size={26} />
+          </button>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Folio Recibo</label>
@@ -226,7 +262,7 @@ const CredentialAppointment = () => {
           title={ticketData.title}
           subtitle={ticketData.subtitle}
           ticketContent={[
-            { label: "Folio Recibo", value: `${formData.folioRecibo}`, type: "string" },
+            { label: "N° Cita", value: `${formData.folioRecibo}`, type: "string" },
             { label: "Folio Pago", value: `${formData.folioPago}`, type: "string" },
             { label: "Nombre", value: formData.nombre, type: "string" },
             { label: "Grupo", value: parseGrupo(formData.grado, formData.grupo), type: "string" },

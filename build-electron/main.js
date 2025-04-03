@@ -78,6 +78,21 @@ app.whenReady().then(()=>{
 
     const defaultPrinterName = '\\\\192.168.100.210\\POS58 Printer';
 
+    ipcMain.handle('soft-reboot', async (event)=> {
+        console.log("action to reboot");
+        const window = BrowserWindow.fromWebContents(event.sender);
+    
+        // Opción 1: Recarga suave primero
+        // event.sender.send('soft-reboot');
+        
+        // Opción 2: Si falla, recarga completa después de un tiempo
+        setTimeout(() => {
+            if (window && !window.isDestroyed()) {
+                window.reload();
+            }
+        }, 250);
+    });
+
     ipcMain.handle('print-ticket', async (event, htmlContent) => {
         // 1. Crear ventana de impresión con dimensiones específicas
         const printWindow = new BrowserWindow({

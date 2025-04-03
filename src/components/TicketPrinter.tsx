@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import html2canvas from 'html2canvas';
-import LogotipoSistemas from "../assets/logosistemas.svg"
-import LogotipoUPN from "../assets/LogotipoOficialUPN164-2025.svg"
+import LogotipoSistemas from "../assets/logosistemas.png"
+import LogotipoUPN from "../assets/LogotipoOficialUPN164-2025.png"
 import { Download, Printer } from 'lucide-react';
 
 // Tipos para las props del componente
@@ -444,7 +444,7 @@ const handleDownloadTicket = async () => {
 
 // Renderizar la previsualización si showPreview es true
 return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center">
         {showPreview && (
             <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
                 <div className="ticket">
