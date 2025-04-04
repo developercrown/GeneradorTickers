@@ -239,7 +239,7 @@ function App() {
         <div className="p-4 px-1 flex-1 m-0 overflow-hidden text-white">
           <div className="h-full flex gap-4 px-3">
             {/* Main Content Area */}
-            <main className="flex-1 bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-x-hidden overflow-y-auto max-h-[1080px] h-full">             
+            <main className="flex-1 bg-gray-900/40 backdrop-blur-2xl rounded-2xl border border-gray-700/50 overflow-hidden max-h-[1080px] h-full">             
               <div className="p-2">
                 <div className="bg-gray-800/30 rounded-xl p-2 backdrop-blur-md">
                   <div key={activeSection} className={`fade-enter ${isTransitioning ? 'opacity-0' : ''}`}>

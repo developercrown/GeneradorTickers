@@ -1,8 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import TicketPrinter from './TicketPrinter';
 import { ArrowDownToDotIcon, CalendarPlus, Save } from 'lucide-react';
 import useLocalStorage from '../hooks/useLocalStorage';
+import Layout, { ContentBlock, ContentBlockTitle } from './Layout';
 
 const ticketData = {
   title: "Cita para Credencialización",
@@ -45,7 +46,7 @@ const CredentialAppointment = () => {
       folioRecibo: '',
       folioPago: '',
     };
-    
+
     return savedFormData || defaultData;
   });
 
@@ -111,10 +112,10 @@ const CredentialAppointment = () => {
   const handleNewAppointment = () => {
     let id: string | number = formData.folioRecibo;
     const newTime = addMinutesToTime(formData.hora, 15);
-    if (isNaN(parseInt(id+""))) {
+    if (isNaN(parseInt(id + ""))) {
       id = "";
     } else {
-      id = parseInt(id+"") + 1;
+      id = parseInt(id + "") + 1;
     }
     setFormData({
       nombre: '',
@@ -134,21 +135,22 @@ const CredentialAppointment = () => {
       // Guardamos en localStorage
       saveFormData(formData);
       setSaveFormState(true);
-      
+
       // Opcional: Mostrar feedback al usuario
       console.log("Datos guardados en localStorage:", formData);
     }
   };
 
   return (
-    <div className="m-0 p-0 flex flex-col lg:flex-row">
-      <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30 w-full lg:w-8/12">
-        <div className="titlebar flex flex-row w-full items-start justify-center">
-          <h2 className="text-2xl font-bold mb-6 text-center w-full">Datos de la Cita</h2>
+    <Layout className=" flex-col lg:flex-row">
+      <ContentBlock>
+      Emsión de enlace Inalambrico
+        <ContentBlockTitle title="Datos de la Cita">
           <button className={`cursor pointer outline-none border-none float right-0 float-end transition-all ease-linear duration-75 text-white opacity-15 ${!saveFormState && "animate-pulse text-orange-400 opacity-100 hover:text-white hover:animate-pulse scale-105 hover:scale-125 active:scale-95"}`} onClick={handleSaveCurrentFormData}>
             <Save size={26} />
           </button>
-        </div>
+        </ContentBlockTitle>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Folio Recibo</label>
@@ -252,12 +254,9 @@ const CredentialAppointment = () => {
               />
             </div>
           </div>
-
-
         </div>
-      </div>
-
-      <div className="w-full lg:w-4/12 overflow-hidden flex flex-col justify-center items-center">
+      </ContentBlock>
+      <ContentBlock width='w-96' height='h-[690px]' className="flex flex-col justify-center items-center" theme="">
         <TicketPrinter
           title={ticketData.title}
           subtitle={ticketData.subtitle}
@@ -284,8 +283,8 @@ const CredentialAppointment = () => {
           showPrint={true}
           onPrint={() => console.log("Impresión iniciada")}
         />
-      </div>
-    </div>
+      </ContentBlock>
+    </Layout>
   );
 };
 

@@ -1,7 +1,7 @@
 const { app, dialog, BrowserWindow, Tray, Menu, nativeImage, ipcMain  } = require('electron'); // <-- Añade Tray, Menu y nativeImage
 const path = require('path');
 
-const devMode = false;
+const devMode = true;
 const debug = false;
 
 let forceQuit = false;

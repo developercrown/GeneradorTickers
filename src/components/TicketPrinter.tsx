@@ -437,7 +437,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
 
     // Renderizar la previsualización si showPreview es true
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center h-full">
             {showPreview && (
                 <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
                     <div className="ticket">
