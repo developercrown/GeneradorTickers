@@ -11,5 +11,7 @@ export default defineConfig({
   build: {
     outDir: 'dist', // Carpeta donde se generará el build
     emptyOutDir: true, // Limpia la carpeta antes de cada build
-  }
+    assetsInlineLimit: 4096 // Tamaño límite para inline assets (4KB)
+  },
+  assetsInclude: ['**/*.svg', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif']
 });

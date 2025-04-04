@@ -1,6 +1,10 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain  } = require('electron'); // <-- Añade Tray, Menu y nativeImage
+const { app, dialog, BrowserWindow, Tray, Menu, nativeImage, ipcMain  } = require('electron'); // <-- Añade Tray, Menu y nativeImage
 const path = require('path');
+
 const devMode = false;
+const debug = false;
+
+let forceQuit = false;
 let mainWindow;
 let tray = null;
 let appIsQuitting = false; // <-- Define esta variable para controlar el cierre
@@ -19,7 +23,8 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            contextIsolation: true//!devMode ? true : false,
+            contextIsolation: true,//!devMode ? true : false,
+            webSecurity: false
         }
     });
 
@@ -56,11 +61,32 @@ function createWindow() {
         // Restaurar al hacer doble clic en el ícono
         tray.on('double-click', () => mainWindow.show());
 
-        // Evitar cierre real si no se hizo clic en "Salir"
         mainWindow.on('close', (event) => {
-            if (!appIsQuitting) {
+            if (!forceQuit) {
                 event.preventDefault();
-                mainWindow.hide();
+                
+                // Opcional: Mostrar diálogo de confirmación
+                const choice = dialog.showMessageBoxSync(mainWindow, {
+                    type: 'question',
+                    buttons: ['Sí, salir', 'No, minimizar'],
+                    title: 'Confirmar',
+                    message: '¿Estás seguro que quieres salir de la aplicación?',
+                    defaultId: 1 // Índice del botón por defecto (No)
+                });
+                
+                if (choice === 0) { // Si elige "Sí, salir"
+                    forceQuit = true;
+                    app.quit();
+                } else {
+                    // Para macOS: ocultar la ventana
+                    if (process.platform === 'darwin') {
+                        mainWindow.hide();
+                    }
+                    // Para Windows/Linux: minimizar
+                    else {
+                        mainWindow.minimize();
+                    }
+                }
             }
         });
 
@@ -69,7 +95,7 @@ function createWindow() {
     }
 
     // DevTools solo en desarrollo
-    if (devMode) mainWindow.webContents.openDevTools();
+    if (devMode || debug) mainWindow.webContents.openDevTools();
 }
 
 
@@ -106,6 +132,8 @@ app.whenReady().then(()=>{
                 contextIsolation: false
             }
         });
+
+        if (devMode || debug) printWindow.webContents.openDevTools();
 
         printWindow.setMenu(null);
     
@@ -160,4 +188,8 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
+app.on('before-quit', () => {
+    forceQuit = true;
 });
