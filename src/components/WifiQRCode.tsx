@@ -4,6 +4,9 @@ import { QrCode, History, Trash2, Key } from 'lucide-react';
 import TicketPrinter from './TicketPrinter';
 import Sidebar from './Sidebar';
 import Layout, { ContentBlock, ContentBlockTitle } from './Layout';
+import WifiTicketsHistory from './WifiTicketsHistory';
+import { useLocalStorageArray } from '../hooks/useLocalStorage';
+import WifiCodeInterface from '../interfaces/wificodeform';
 
 const ticketData = {
   title: "WIFI UPN164",
@@ -110,6 +113,8 @@ const createPasswordWiFi = (opciones: {
 }
 
 const WifiQRCode = () => {
+  const { value: wifiTickets, addItem: addWifiTicket, removeItem: removeWifiTicket } = useLocalStorageArray<WifiCodeInterface>('wifiTicketsHistory');
+
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [qrCode, setQRCode] = useState('');
   const [sidebarVisibility, setSidebarVisibility] = useState<boolean>(false);
@@ -196,8 +201,34 @@ const WifiQRCode = () => {
     setSidebarVisibility(false);
   }
 
+  const handleSaveWifiConfiguration = () => {
+    
+    if (!formData.requester) {
+      console.log('No se ha ingresado el nombre del solicitante');
+      return;
+    }
+
+    if (!qrCode) {
+      console.log('Primero genera un código QR antes de guardar');
+      return;
+    }
+
+    const ticketToSave: WifiQRCodeInterface = {
+      requester: formData.requester,
+      ssid: formData.ssid,
+      password: formData.password,
+      hidden: formData.hidden,
+      expiration: formData.expiration,
+      timedate: new Date().toISOString(),
+      qrCode: qrCode,
+    };
+
+    addWifiTicket(ticketToSave);
+    console.log('Ticket guardado en el historial');
+  }
+
   return <>
-    <Sidebar onHide={handleHideSidebar} visibility={sidebarVisibility} title="Historial de redes" children={<h1 className="bg-orange-400 h-[5000px]">Hola mundo</h1>} />
+    <Sidebar onHide={handleHideSidebar} visibility={sidebarVisibility} title="Historial de redes" children={<WifiTicketsHistory wifiTickets={wifiTickets} onRemove={removeWifiTicket}/>} />
 
     <Layout className="flex-col lg:flex-row">
 
@@ -279,8 +310,9 @@ const WifiQRCode = () => {
           </div>
         </div>
         <div className="flex items-center justify-center text-center gap-2">
-          <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/3 mt-4" onClick={generateQRCode}>Crear Código</button>
-          <button className="bg-orange-700 hover:bg-orange-600 active:bg-orange-800 p-2 rounded-sm w-1/3 mt-4" onClick={() => setSidebarVisibility(true)}>Ver Historial</button>
+          <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/4 mt-4" onClick={generateQRCode}>Crear Código</button>
+          <button className="bg-green-700 hover:bg-green-600 active:bg-green-800 p-2 rounded-sm w-1/4 mt-4" onClick={handleSaveWifiConfiguration}>Guardar</button>
+          <button className="bg-orange-700 hover:bg-orange-600 active:bg-orange-800 p-2 rounded-sm w-1/4 mt-4" onClick={() => setSidebarVisibility(true)}>Ver Historial</button>
         </div>
       </ContentBlock>
 

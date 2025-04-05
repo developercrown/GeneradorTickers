@@ -29,7 +29,7 @@ const Sidebar = ({ children, title, onHide, visibility }: SidebarProperties) => 
           {title && <h2 className="font-bold animate-pulse text-center w-full">{title}</h2>}
         </div>
       </div>
-      <div className="bg-red-500 w-full h-full p-2 overflow-hidden overflow-y-auto">
+      <div className="w-full h-fit overflow-hidden overflow-y-auto flex flex-col flex-1">
           {children}
         </div>
     </div>

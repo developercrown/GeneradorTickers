@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import TicketPrinter from './TicketPrinter';
-import { ArrowDownToDotIcon, CalendarPlus, Save } from 'lucide-react';
+import { CalendarPlus, Save } from 'lucide-react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import Layout, { ContentBlock, ContentBlockTitle } from './Layout';
 
