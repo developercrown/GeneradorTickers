@@ -256,7 +256,7 @@ const CredentialAppointment = () => {
           </div>
         </div>
       </ContentBlock>
-      <ContentBlock width='w-96' height='h-[690px]' className="flex flex-col justify-center items-center" theme="">
+      <ContentBlock width='w-96' height='h-[695px]' className="flex flex-col justify-center items-center" theme="" scrollX={false} scrollY={false} overflowHidden={true}>
         <TicketPrinter
           title={ticketData.title}
           subtitle={ticketData.subtitle}

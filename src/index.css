@@ -63,3 +63,9 @@
   overflow: hidden;
   animation: animate-window-in ease 1s forwards
 }
+
+.no-transition-effects, .no-transition-effects *{
+  transition: none !important;
+  transition-duration: unset !important;
+  transition-timing-function: unset !important;
+}

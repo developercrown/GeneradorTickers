@@ -1,7 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
-import { Download, Printer } from 'lucide-react';
+import { Download, Printer, ZoomIn, ZoomOut } from 'lucide-react';
 import { getImage } from '../utils/ImageUtils';
+
+interface ActionButtonProperties {
+    icon: React.ReactNode;
+    title: string;
+    action: () => void;
+    disabled?: boolean
+}
+
+const ActionButton = ({ icon, title, action, disabled = false }: ActionButtonProperties) => {
+    const styleClasses = "p-2 text-gray-600 no-transition-effects " + (disabled ? "opacity-40" : "hover:bg-opacity-30 hover:text-white hover:text-opacity-90 active:scale-95")
+    return <button onClick={action} title={title}
+        className={styleClasses}>
+        {icon}
+    </button>
+}
 
 // Tipos para las props del componente
 type TicketRow = {
@@ -41,6 +56,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
     const logoUPN = getImage('LogotipoUPN');
     const logoSistemas = getImage('LogotipoSistemas');
     const canvasRef = useRef(null);
+    const [scale, setScale] = useState(1);
     // Función para generar el HTML completo del ticket
     const generateTicketHTML = (logosistemas: string, logoupn: string) => {
         return `<!DOCTYPE html>
@@ -435,111 +451,141 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
         }
     };
 
-    // Renderizar la previsualización si showPreview es true
-    return (
-        <div className="flex flex-col items-center justify-center h-full">
-            {showPreview && (
-                <div className="w-[58mm] h-auto border border-gray-300 p-2 mb-4 bg-white rounded-xs" ref={canvasRef}>
-                    <div className="ticket">
-                        <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
-                            <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={logoSistemas} alt="Logo Sistemas" />
-                            <img className="imgUPN h-[25mm] w-auto object-contain" src={logoUPN} alt="Logo UPN" />
-                        </header>
+    const Ticket = () => {
+        return <div className="ticket w-[58mm] h-fit border border-gray-300 px-2 py-4 bg-white rounded-xs flex flex-col items-center justify-start">
+            <header className="header flex justify-center items-center mt-[2mm] mb-[1mm] pb-[2mm] border-b-2 border-black">
+                <img className="imgSISTEMAS h-[25mm] w-auto object-contain" src={logoSistemas} alt="Logo Sistemas" />
+                <img className="imgUPN h-[25mm] w-auto object-contain" src={logoUPN} alt="Logo UPN" />
+            </header>
 
-                        <div className="title-container text-center mt-[1.5mm]">
-                            <h1 className="title text-lg font-bold uppercase tracking-wider text-black mb-[2mm]">{title}</h1>
-                            <div className="title-decoration h-1 bg-gradient-to-r from-transparent via-black to-transparent mx-auto w-[70%] my-[3mm]"></div>
-                            <p className="subtitle text-xs font-bold text-black tracking-wider">{subtitle}</p>
-                        </div>
+            <div className="title-container text-center mt-[1.5mm]">
+                <h1 className="title text-lg font-bold uppercase tracking-wider text-black mb-[2mm]">{title}</h1>
+                <div className="title-decoration h-1 bg-gradient-to-r from-transparent via-black to-transparent mx-auto w-[70%] my-[3mm]"></div>
+                <p className="subtitle text-xs font-bold text-black tracking-wider">{subtitle}</p>
+            </div>
 
-                        <div className="ticket-content w-full my-[2mm]">
-                            {
-                                ticketContent.map((row, index) => {
-                                    if (row.type == "qr") {
-                                        return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                            <img
-                                                src={row.value}
-                                                alt="QR Code"
-                                                className="w-[300px] h-[300px] mx-auto mb-4"
-                                            />
-                                        </div>
+            <div className="ticket-content w-full my-[2mm] overflow-hidden">
+                {
+                    ticketContent.map((row, index) => {
+                        if (row.type == "qr") {
+                            return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                <img
+                                    src={row.value}
+                                    alt="QR Code"
+                                    className="w-[300px] h-[300px] mx-auto mb-4"
+                                />
+                            </div>
 
-                                    } else if (row.type == "image") {
-                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
-                                        </div>
-                                    } else {
-                                        return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                            <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                            <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
-                                        </div>
-                                    }
-                                })
+                        } else if (row.type == "image") {
+                            return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                            </div>
+                        } else {
+                            return <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                <span className="ticket-value flex-1 text-right font-bold text-black text-sm">{row.value}</span>
+                            </div>
+                        }
+                    })
+                }
+            </div>
+
+            {highlightContent.length > 0 && (
+                <div className="highlight-row">
+                    {
+                        highlightContent.map((row, index) => {
+                            if (row.type == "qr") {
+                                return row.value && <div key={index} className="ticket-row flex flex-col justify-between mb-0 pb-[1mm] border-b border-dotted border-black">
+                                    <span className="ticket-label font-bold text-gray-700 text-sm text-center">{row.label}:</span>
+                                    <img
+                                        src={row.value}
+                                        alt="QR Code"
+                                        className="w-[180px] h-[180px] mx-auto mb-0"
+                                    />
+                                </div>
+
+                            } else if (row.type == "image") {
+                                return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
+                                    <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
+                                    <img
+                                        src={row.value}
+                                        alt="QR Code"
+                                        className="w-[300px] h-[300px] mx-auto mb-4"
+                                    />
+                                </div>
+                            } else {
+                                return <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
+                                    <span className="ticket-label font-bold text-black">{row.label}:</span>
+                                    <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
+                                </div>
                             }
-                        </div>
-
-                        {highlightContent.length > 0 && (
-                            <div className="highlight-row">
-                                {
-                                    highlightContent.map((row, index) => {
-                                        if (row.type == "qr") {
-                                            return row.value && <div key={index} className="ticket-row flex flex-col justify-between mb-0 pb-[1mm] border-b border-dotted border-black">
-                                                <span className="ticket-label font-bold text-gray-700 text-sm text-center">{row.label}:</span>
-                                                <img
-                                                    src={row.value}
-                                                    alt="QR Code"
-                                                    className="w-[180px] h-[180px] mx-auto mb-0"
-                                                />
-                                            </div>
-
-                                        } else if (row.type == "image") {
-                                            return row.value && <div key={index} className="ticket-row flex justify-between mb-[1mm] pb-[1mm] border-b border-dotted border-black">
-                                                <span className="ticket-label font-bold text-gray-700 text-sm">{row.label}:</span>
-                                                <img
-                                                    src={row.value}
-                                                    alt="QR Code"
-                                                    className="w-[300px] h-[300px] mx-auto mb-4"
-                                                />
-                                            </div>
-                                        } else {
-                                            return <div key={index} className="ticket-row flex justify-between" style={{ borderBottom: 'none', marginBottom: 0 }}>
-                                                <span className="ticket-label font-bold text-black">{row.label}:</span>
-                                                <span className="ticket-value flex-1 text-right font-bold text-black">{row.value}</span>
-                                            </div>
-                                        }
-                                    })
-                                }
-                            </div>
-                        )}
-
-                        {footerContent.length > 0 && (
-                            <div className="footer text-center mt-[1mm] pt-[3mm] border-t-2 border-dashed border-black text-xs text-black leading-snug">
-                                {footerContent.map((item, index) => (
-                                    <div key={index} className={item.classNames || ''}>{item.value}</div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                        })
+                    }
                 </div>
             )}
-            <div className="actions w-full flex items-center justify-around gap-4">
-                {
-                    showDownload && <button
-                        onClick={handleDownloadTicket}
-                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] transition-all duration-200"
-                    >
-                        <Download size={24} />
-                    </button>
-                }
-                {
-                    showPrint && <button
-                        onClick={handlePrintTicket}
-                        className="flex flex-row items-center justify-center w-full py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 active:scale-[0.98] transition-all duration-200"
-                    >
-                        <Printer size={24} />
-                    </button>}
-            </div>
+
+            {footerContent.length > 0 && (
+                <div className="footer text-center mt-[1mm] pt-[3mm] border-t-2 border-dashed border-black text-xs text-black leading-snug">
+                    {footerContent.map((item, index) => (
+                        <div key={index} className={item.classNames || ''}>{item.value}</div>
+                    ))}
+                </div>
+            )}
+        </div>
+    }
+
+    const handleZoomIn = () => setScale(prev => {
+        let newScale = Math.min(prev + 0.1, 2);
+        if (newScale > 1) {
+            return 1
+        }
+        return newScale;
+    });
+
+    const handleZoomOut = () => setScale(prev => {
+        let newScale = Math.max(prev - 0.1, 0.5);
+        if (newScale <= 0.5) {
+            return 0.5;
+        }
+        return newScale;
+    });
+
+
+
+
+    return (
+        <div className="w-full h-full overflow-hidden select-none">
+            {showPreview && <>
+                <div className="bg-transparent w-full h-1/12 flex items-center justify-around gap-2 controls-section bg-blue-600">
+                    <div className="left">
+                        {
+                            (showDownload || showPrint) && <>
+                                {
+                                    showPrint && <ActionButton icon={<Printer size={20} />} title="Imprimir ticket" action={handlePrintTicket} />
+                                }
+                                {
+                                    showDownload && <ActionButton icon={<Download size={20} />} title="Descargar ticket" action={handleDownloadTicket} />
+                                }
+                            </>
+                        }
+                    </div>
+                    <div className="right">
+                        <ActionButton icon={<ZoomOut size={20} />} title="Reducir vista previa" action={handleZoomOut} disabled={scale <= 0.5} />
+                        <ActionButton icon={<ZoomIn size={20} />} title="Aumentar vista previa" action={handleZoomIn} disabled={scale === 1} />
+                    </div>
+                </div>
+                <div className="flex flex-row items-center justify-center overflow-hidden overflow-y-auto p-2 py-4 h-[630px] bg-transparent render-section" ref={canvasRef}>
+                    <div className="renderContent h-full w-full flex flex-row items-baseline justify-center" style={{
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'center center',
+                        transition: 'transform 0.3s ease'
+                    }}>
+                        <Ticket />
+                    </div>
+
+                </div>
+            </>}
         </div>
     );
 };

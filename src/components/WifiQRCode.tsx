@@ -199,92 +199,92 @@ const WifiQRCode = () => {
   return <>
     <Sidebar onHide={handleHideSidebar} visibility={sidebarVisibility} title="Historial de redes" children={<h1 className="bg-orange-400 h-[5000px]">Hola mundo</h1>} />
 
-    <Layout className=" flex-col lg:flex-row">
+    <Layout className="flex-col lg:flex-row">
 
-    <ContentBlock>
-      <ContentBlockTitle title="Emsión de enlace Inalambrico" />
+      <ContentBlock>
+        <ContentBlockTitle title="Emsión de enlace Inalambrico" />
 
-      <div className="space-y-4 mt-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Nombre del Solicitante</label>
-          <input
-            ref={nameInputRef}
-            type="text"
-            name="requester"
-            value={formData.requester}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">SSID</label>
-          <select
-            name="ssid"
-            value={formData.ssid}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
-          >
-            {AVAILABLE_SSID_MAP.map((item, key) => (
-              <option key={key} value={item.value}>{item.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <div className="flex w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
-            <input
-              type="text"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="w-11/12 bg-transparent border-none outline-none"
-            />
-            <button onClick={restorePassword} className="w-1/12 h-8 transition-all rounded-full hover:scale-105 active:scale-95 hover:bg-slate-300 hover:bg-opacity-25 flex items-center justify-center"><Key size={20} /></button>
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Visibilidad:</label>
-          <select
-            name="hidden"
-            value={formData.hidden}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
-          >
-            {PRIVACY_OPTIONS.map((item, key) => (
-              <option key={key} value={item.value}>{item.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Tiempo activo:</label>
-          <select
-            name="expiration"
-            value={formData.expiration}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
-          >
-            {EXPIRATION_OPTIONS.map((item, key) => (
-              <option key={key} value={item.value}>{item.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 text-center">
+        <div className="space-y-4 mt-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Fecha de emisión: {formData.timedate}</label>
+            <label className="block text-sm font-medium mb-1">Nombre del Solicitante</label>
+            <input
+              ref={nameInputRef}
+              type="text"
+              name="requester"
+              value={formData.requester}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">SSID</label>
+            <select
+              name="ssid"
+              value={formData.ssid}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+            >
+              {AVAILABLE_SSID_MAP.map((item, key) => (
+                <option key={key} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <div className="flex w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
+              <input
+                type="text"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-11/12 bg-transparent border-none outline-none"
+              />
+              <button onClick={restorePassword} className="w-1/12 h-8 transition-all rounded-full hover:scale-105 active:scale-95 hover:bg-slate-300 hover:bg-opacity-25 flex items-center justify-center"><Key size={20} /></button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Visibilidad:</label>
+            <select
+              name="hidden"
+              value={formData.hidden}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+            >
+              {PRIVACY_OPTIONS.map((item, key) => (
+                <option key={key} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Tiempo activo:</label>
+            <select
+              name="expiration"
+              value={formData.expiration}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 bg-gray-900/50 rounded border border-gray-700/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+            >
+              {EXPIRATION_OPTIONS.map((item, key) => (
+                <option key={key} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 text-center">
+            <div>
+              <label className="block text-sm font-medium mb-1">Fecha de emisión: {formData.timedate}</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex items-center justify-center text-center gap-2">
-        <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/3 mt-4" onClick={generateQRCode}>Crear Código</button>
-        <button className="bg-orange-700 hover:bg-orange-600 active:bg-orange-800 p-2 rounded-sm w-1/3 mt-4" onClick={() => setSidebarVisibility(true)}>Ver Historial</button>
-      </div>
-    </ContentBlock>
+        <div className="flex items-center justify-center text-center gap-2">
+          <button className="bg-purple-700 hover:bg-purple-600 active:bg-purple-800 p-2 rounded-sm w-1/3 mt-4" onClick={generateQRCode}>Crear Código</button>
+          <button className="bg-orange-700 hover:bg-orange-600 active:bg-orange-800 p-2 rounded-sm w-1/3 mt-4" onClick={() => setSidebarVisibility(true)}>Ver Historial</button>
+        </div>
+      </ContentBlock>
 
-      <ContentBlock width='w-96' height='h-[690px]' className="flex flex-col justify-center items-center" theme="">
+      <ContentBlock width='w-96' height='h-[695px]' className="flex flex-col justify-center items-center" theme="" scrollX={false} scrollY={false} overflowHidden={true}>
         <TicketPrinter
           title={ticketData.title}
           subtitle={ticketData.subtitle}
@@ -327,10 +327,6 @@ const WifiQRCode = () => {
           onPrint={() => console.log("Impresión iniciada")}
         />
       </ContentBlock>
-      {/* <div className="w-full flex flex-col justify-start items-center overflow-y-auto h-[1200px]">
-        
-
-      </div> */}
     </Layout>
   </>;
 };
