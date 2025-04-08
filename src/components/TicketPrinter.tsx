@@ -442,7 +442,7 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
 
     const handleDownloadTicket = async () => {
         if (canvasRef.current) {
-            const canvas = await html2canvas(canvasRef.current);
+            const canvas = await html2canvas(canvasRef.current, {removeContainer: true, scrollX: 0, scrollY: 0});
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
             link.download = 'myTicket.png';
@@ -575,15 +575,14 @@ const TicketPrinter: React.FC<TicketPrinterProps> = ({
                         <ActionButton icon={<ZoomIn size={20} />} title="Aumentar vista previa" action={handleZoomIn} disabled={scale === 1} />
                     </div>
                 </div>
-                <div className="flex flex-row items-center justify-center overflow-hidden overflow-y-auto p-2 py-4 h-[630px] bg-transparent render-section" ref={canvasRef}>
+                <div className="flex flex-row items-center justify-center overflow-hidden overflow-y-auto p-2 py-4 h-[630px] bg-transparent render-section">
                     <div className="renderContent h-full w-full flex flex-row items-baseline justify-center" style={{
                         transform: `scale(${scale})`,
                         transformOrigin: 'center center',
                         transition: 'transform 0.3s ease'
-                    }}>
+                    }} ref={canvasRef}>
                         <Ticket />
                     </div>
-
                 </div>
             </>}
         </div>

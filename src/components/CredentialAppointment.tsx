@@ -4,24 +4,15 @@ import TicketPrinter from './TicketPrinter';
 import { CalendarPlus, Save } from 'lucide-react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import Layout, { ContentBlock, ContentBlockTitle } from './Layout';
+import useSwal from '../hooks/useSwal';
 
 const ticketData = {
   title: "Cita para Credencialización",
   subtitle: "CORONA TICKET SYSTEM 1.0",
 };
 
-interface FormInterface {
-  nombre: string,
-  grupo: string,
-  grado: string,
-  carrera: string,
-  fecha: string,
-  hora: string,
-  folioRecibo: string | number,
-  folioPago: number
-}
-
 const CredentialAppointment = () => {
+  const {toast} = useSwal();
   const nombreInputRef = useRef<HTMLInputElement>(null);
   const [saveFormState, setSaveFormState] = useState<boolean>(true);
   const { value: savedFormData, setValue: saveFormData } = useLocalStorage<typeof formData>('credentialAppointmentData');
@@ -127,7 +118,8 @@ const CredentialAppointment = () => {
       folioRecibo: id + "",
       folioPago: "",
     })
-    handleSaveCurrentFormData()
+    handleSaveCurrentFormData();
+    toast("success", "Formulario Restablecido", 1500, true)
   }
 
   const handleSaveCurrentFormData = () => {
@@ -137,7 +129,8 @@ const CredentialAppointment = () => {
       setSaveFormState(true);
 
       // Opcional: Mostrar feedback al usuario
-      console.log("Datos guardados en localStorage:", formData);
+      // console.log("Datos guardados en localStorage:", formData);
+      toast("success", "Registro almacenado", 1500, true)
     }
   };
 

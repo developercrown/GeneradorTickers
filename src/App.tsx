@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
-  Ticket, 
-  // Calendar, 
-  Wifi, 
-  // Key, 
-  // Users, 
-  // Share2,
+  Ticket,
+  Wifi,
   CircuitBoard,
   Mail,
   Phone,
   Globe,
-  Instagram,
-  Facebook,
-  Twitter,
-  RefreshCcwDot,
-  RefreshCw,
-  RefreshCcwDotIcon,
-  RefreshCwOff,
   Loader,
-  Loader2,
   Loader2Icon
 } from 'lucide-react';
 import CredentialAppointment from './components/CredentialAppointment';
@@ -37,86 +25,9 @@ const menuItems = [
     title: 'Acceso WiFi',
     description: 'Configura tu conexión WiFi',
     icon: <Wifi className="w-6 h-6" />
-  },
-  // {
-  //   id: 'tech-support',
-  //   title: 'Soporte Técnico',
-  //   description: 'Asistencia con equipos y sistemas',
-  //   icon: <Calendar className="w-5 h-5" />
-  // },
-  // {
-  //   id: 'credentials',
-  //   title: 'Credenciales',
-  //   description: 'Gestiona tus accesos',
-  //   icon: <Key className="w-5 h-5" />
-  // },
-  // {
-  //   id: 'contact',
-  //   title: 'Contacto',
-  //   description: 'Información de contacto',
-  //   icon: <Users className="w-5 h-5" />
-  // },
-  // {
-  //   id: 'social',
-  //   title: 'Redes Sociales',
-  //   description: 'Síguenos en redes sociales',
-  //   icon: <Share2 className="w-5 h-5" />
-  // }
+  }
 ];
 
-const TechSupportContent = () => (
-  <div className="p-4">
-    <h2 className="text-xl font-bold mb-4">Soporte Técnico</h2>
-    <p>Contenido de soporte técnico...</p>
-  </div>
-);
-
-const CredentialsContent = () => (
-  <div className="p-4">
-    <h2 className="text-xl font-bold mb-4">Credenciales</h2>
-    <p>Contenido de gestión de credenciales...</p>
-  </div>
-);
-
-const ContactContent = () => (
-  <div className="p-4">
-    <h2 className="text-xl font-bold mb-4">Contacto</h2>
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <Mail className="w-5 h-5 text-blue-400" />
-        <span>soporte@universidad.edu</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <Phone className="w-5 h-5 text-blue-400" />
-        <span>+1 234 567 8900</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <Globe className="w-5 h-5 text-blue-400" />
-        <span>www.universidad.edu</span>
-      </div>
-    </div>
-  </div>
-);
-
-const SocialContent = () => (
-  <div className="p-4">
-    <h2 className="text-xl font-bold mb-4">Redes Sociales</h2>
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <Instagram className="w-5 h-5 text-pink-400" />
-        <span>@universidad</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <Facebook className="w-5 h-5 text-blue-400" />
-        <span>Universidad Oficial</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <Twitter className="w-5 h-5 text-blue-400" />
-        <span>@universidad</span>
-      </div>
-    </div>
-  </div>
-);
 
 function App() {
   const [imagesReady, setImagesReady] = useState(false);
@@ -140,7 +51,6 @@ function App() {
   const handleSectionChange = (sectionId: string) => {
     setIsTransitioning(true);
     setActiveSection(sectionId);
-    // Reset transition state after animation completes
     setTimeout(() => setIsTransitioning(false), 50);
   };
 
@@ -148,29 +58,20 @@ function App() {
     switch (activeSection) {
       case 'student-id':
         return <CredentialAppointment />;
-      case 'tech-support':
-        return <TechSupportContent />;
       case 'wifi':
         return <WifiQRCode />;
-      case 'credentials':
-        return <CredentialsContent />;
-      case 'contact':
-        return <ContactContent />;
-      case 'social':
-        return <SocialContent />;
       default:
         return <CredentialAppointment />;
     }
   };
 
   const handleReload = () => {
-    console.log("rebooting");    
     window.electron.ipcRenderer.invoke('soft-reboot');
   }
 
   if (!imagesReady) {
     return <div className="w-screen h-screen flex flex-row items-center justify-center">
-      <Loader2Icon size={32} className="text-white"/>
+      <Loader2Icon size={32} className="text-white animate-spin"/>
       <h1 className="text-center text-white text-lg">Cargando Recursos...</h1>
     </div>; // Mostrar loading mientras se cargan
   }
@@ -232,7 +133,7 @@ function App() {
                     </button>
                   ))}
                 </div>
-                <button className="text-red-500 absolute -top-1 -left-1 w-10 h-8 flex items-center justify-center rounded-sm hover:text-yellow-600 hover:scale-110 active:scale-95 active:text-red-400 transition-all cursor-pointer" onClick={handleReload}><Loader size={18} className='hover:animate-spin' /></button>
+                <button className="text-red-500 fixed bottom-0 -right-1 w-10 h-8 flex items-center justify-center rounded-sm hover:text-yellow-600 hover:scale-110 active:scale-95 active:text-red-400 transition-all cursor-pointer" onClick={handleReload}><Loader size={18} className='hover:animate-spin' /></button>
           </div>
         </header>
 

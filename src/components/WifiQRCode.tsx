@@ -7,6 +7,7 @@ import Layout, { ContentBlock, ContentBlockTitle } from './Layout';
 import WifiTicketsHistory from './WifiTicketsHistory';
 import { useLocalStorageArray } from '../hooks/useLocalStorage';
 import WifiCodeInterface from '../interfaces/wificodeform';
+import useSwal from '../hooks/useSwal';
 
 const ticketData = {
   title: "WIFI UPN164",
@@ -113,13 +114,34 @@ const createPasswordWiFi = (opciones: {
 }
 
 const WifiQRCode = () => {
+  const { toast } = useSwal();
   const { value: wifiTickets, addItem: addWifiTicket, removeItem: removeWifiTicket } = useLocalStorageArray<WifiCodeInterface>('wifiTicketsHistory');
+  // console.log(wifiTickets);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [qrCode, setQRCode] = useState('');
   const [sidebarVisibility, setSidebarVisibility] = useState<boolean>(false);
 
+  
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return {
+      date: now.toISOString().split('T')[0],
+      time: now.toTimeString().slice(0, 5)
+    };
+  };
+
+  const getFormattedDateTime = () => {
+    const current = getCurrentDateTime();
+    if(current){
+      return `${current.date}, ${current.time}`
+    }
+    return "-";
+  }
+
+
   const generateQRCode = async () => {
+    setFormData(prev => ({ ...prev, timedate: getFormattedDateTime() }));
     if (!formData.ssid || !formData.password) {
       alert('Por favor ingrese SSID y contraseña');
       return;
@@ -141,34 +163,25 @@ const WifiQRCode = () => {
 
       setQRCode(qrCodeDataURL);
 
-      const newQRCode: WifiQRCodeInterface = {
-        requester: formData.requester,
-        ssid: formData.ssid,
-        password: formData.password,
-        hidden: formData.hidden,
-        expiration: formData.expiration,
-        timedate: new Date().toISOString(),
-        qrCode: qrCodeDataURL,
-      };
-      console.log(newQRCode);
-
+      // const newQRCode: WifiQRCodeInterface = {
+      //   requester: formData.requester,
+      //   ssid: formData.ssid,
+      //   password: formData.password,
+      //   hidden: formData.hidden,
+      //   expiration: formData.expiration,
+      //   timedate: new Date().toISOString(),
+      //   qrCode: qrCodeDataURL,
+      // };
+      // console.log(newQRCode);
+      toast("success", "Codigo QR Creado con exito!");
     } catch (err) {
-      console.error('Error generating QR code:', err);
-      alert('Error al generar el código QR');
+      // console.error('Error generating QR code:', err);
+      // alert('Error al generar el código QR');
+      toast("error", "Error al generar el código QR!" + err);
     }
   };
 
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    return {
-      date: now.toISOString().split('T')[0],
-      time: now.toTimeString().slice(0, 5)
-    };
-  };
-
-  const resetForm = () => {
-    setQRCode('');
-  };
+  const curdatetime = getFormattedDateTime();
 
   const [formData, setFormData] = useState<WifiQRCodeInterface>({
     requester: '',
@@ -176,7 +189,7 @@ const WifiQRCode = () => {
     password: createPasswordWiFi({ letras: 2, numeros: 4 }),
     hidden: "public",
     expiration: '12h',
-    timedate: `${getCurrentDateTime().date} ${getCurrentDateTime().time}`,
+    timedate: `${curdatetime}`,
     qrCode: ''
   });
 
@@ -198,18 +211,22 @@ const WifiQRCode = () => {
   }
 
   const handleHideSidebar = () => {
+    setFormData(prev => ({ ...prev, timedate: getFormattedDateTime() }));
     setSidebarVisibility(false);
   }
 
   const handleSaveWifiConfiguration = () => {
-    
+    setFormData(prev => ({ ...prev, timedate: getFormattedDateTime() }));
+
     if (!formData.requester) {
-      console.log('No se ha ingresado el nombre del solicitante');
+      // console.log('');
+      toast("info", "No se ha ingresado el nombre del solicitante!");
       return;
     }
 
     if (!qrCode) {
-      console.log('Primero genera un código QR antes de guardar');
+      toast("info", "Primero genera un código QR antes de guardar");
+      // console.log('Primero genera un código QR antes de guardar');
       return;
     }
 
@@ -224,11 +241,12 @@ const WifiQRCode = () => {
     };
 
     addWifiTicket(ticketToSave);
-    console.log('Ticket guardado en el historial');
+    // console.log('Ticket guardado en el historial', ticketToSave);
+    toast("info", "Ticket guardado en el historial");
   }
 
   return <>
-    <Sidebar onHide={handleHideSidebar} visibility={sidebarVisibility} title="Historial de redes" children={<WifiTicketsHistory wifiTickets={wifiTickets} onRemove={removeWifiTicket}/>} />
+    <Sidebar onHide={handleHideSidebar} visibility={sidebarVisibility} title="Historial de redes" children={<WifiTicketsHistory wifiTickets={wifiTickets} onRemove={removeWifiTicket} />} />
 
     <Layout className="flex-col lg:flex-row">
 
